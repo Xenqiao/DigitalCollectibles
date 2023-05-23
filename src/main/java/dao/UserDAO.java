@@ -9,4 +9,5 @@ import dto.UserDTO;
 public interface UserDAO {
     UserDTO findUserDTO(String userName);
     boolean registerUser();
+    void addCustomer(UserDTO userDTO);
 }

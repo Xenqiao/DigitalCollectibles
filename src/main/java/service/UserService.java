@@ -9,6 +9,5 @@ import java.util.List;
  * @create 2023/4/27 21:34
  */
 public interface UserService {
-    List<UserDTO> findUserExists(String userName);
-    int size();
+    void addUser(UserDTO userDTO);
 }

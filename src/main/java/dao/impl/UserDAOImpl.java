@@ -72,4 +72,8 @@ public class UserDAOImpl implements UserDAO {
         return mysqlDAO.executeUpdate(sql,param);
     }
 
+    @Override
+    public void addCustomer(UserDTO userDTO) {
+
+    }
 }
