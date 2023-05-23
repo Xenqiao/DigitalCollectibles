@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <script type="text/javascript" src="js/jquery-3.5.1.min.js"></script>
+    </head>
+    <body>
+        <div id="avatar" class="boxlist2 t1">
+            <label class="btn-file" data-role="add">
+                <img id = "#avatarImg" src="jpg/my.jpg" width="220" height="220" alt=""/>
+                <input id="avatarFile" accept="image/*" name="avatarFile" type="file" style="display:none;" />
+            </label>
+        </div>
+        <script>
+            $(function(){
+                var inputFile = document.getElementById('avatarFile')
+                
+                // 监听文件改变
+                inputFile.addEventListener('click', function() {this.value = null;}, false);
+                inputFile.addEventListener('change', readData, false);
+                
+            })
+            
+            
+            // 文件改变响应
+            function readData(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+                
+                var file = evt.dataTransfer !== undefined ? evt.dataTransfer.files[0] : evt.target.files[0];
+                
+                if (!file.type.match(/image.*/)) {return;}
+                
+                var reader = new FileReader();
+                
+                reader.onload = (function() {
+                    
+                    return function(e) {
+                        var img = new Image();
+                        img.src = e.target.result;
+                        
+                        img.onload = (function() {
+                            
+                            var canvas = document.createElement('canvas');
+                            canvas.width = 800;
+                            canvas.height = 800;
+                            
+                            var ctx = canvas.getContext("2d");
+                            
+                            ctx.clearRect(0, 0, canvas.width, canvas.height); // canvas清屏
+                            
+                            //重置canvans宽高 canvas.width = img.width; canvas.height = img.height;
+                            
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // 将图像绘制到canvas上
+                            
+                            canvas.toDataURL("image/jpeg");//必须等压缩完才读取canvas值，否则canvas内容是黑帆布
+                            
+                            cropAndUploadImage(canvas.toDataURL("image/jpeg"));
+                        });
+                    }
+                })(file);
+                
+                reader.readAsDataURL(file);
+            }
+            
+            
+            function cropAndUploadImage(base64){
+                
+                var b64 = base64.split(",")[1];
+                // var load = layerLoad();
+                $.ajax({
+                    url: '/UploadImgServlet',
+                    type: "post",
+                    data:{
+                        photo : b64,
+                    },
+                    dataType: 'json',
+                    success:function(data) {
+                        if(data.success){
+                            setTimeout(function(){
+                                window.location.reload();
+                            },1000);
+                            
+                        }else {
+                            // layer.close(load);
+                            // layerOpen(date.error);
+                        }
+                    },
+                    error : function() {
+                        // view("异常！");
+                        // layer.close(load);
+                        // layerAlert("图片上传超时！");
+                    }
+                })
+            }
+        </script>
+    </body>
+</html>
+
+
+
