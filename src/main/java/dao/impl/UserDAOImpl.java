@@ -2,6 +2,7 @@ package dao.impl;
 
 import dao.DBUtil;
 import dao.MysqlDAO;
+import dao.MySqlBuilder;
 import dao.UserDAO;
 import dto.UserDTO;
 import service.CreateUserService;
@@ -21,7 +22,7 @@ public class UserDAOImpl implements UserDAO {
     private PreparedStatement ps;
     private String sql;
     private ResultSet rs;
-    //FiscoInitializer getBcosSDK = FiscoInitializer.theGetBcosSDK();
+
     UserDTO userDTO = UserDTO.getUserDTO();
 
     @Override
@@ -35,8 +36,10 @@ public class UserDAOImpl implements UserDAO {
         }
         UserDTO userDTO = new UserDTO();
         try {
+            MySqlBuilder mySqlBuilder = new MySqlBuilder();
+            String[] strings = {"*"};
+            sql = mySqlBuilder.select(strings,"user","userName");
 
-            sql = "select * from user where userName =?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, userName);
             rs = ps.executeQuery();
@@ -62,7 +65,11 @@ public class UserDAOImpl implements UserDAO {
         String hash = createUserService.getUserHash();
         userDTO.setHash(hash);
 
-        sql = " insert into user(userName,password,hash) values(?,?,?) ";
+        //sql = " insert into user(userName,password,hash) values(?,?,?) ";
+        MySqlBuilder mySqlBuilder = new MySqlBuilder();
+        String[] strings = {"userName","password","hash"};
+        sql = mySqlBuilder.insert("user",strings);
+
         Object[] param = {
                 userDTO.getUserName(),
                 userDTO.getPwd(),
@@ -76,4 +83,5 @@ public class UserDAOImpl implements UserDAO {
     public void addCustomer(UserDTO userDTO) {
 
     }
+
 }

@@ -17,7 +17,6 @@ import org.apache.commons.dbcp2.BasicDataSource;
 public class MyConnectionPool {
 
     private static final int MAX_POOL_SIZE = 100;
-
     private static DataSource dataSource;
     private static BlockingQueue<Connection> idleConnections;
     private static AtomicInteger activeConnections = new AtomicInteger(0);
@@ -136,7 +135,5 @@ public class MyConnectionPool {
             }
         }
     }
-
-
 }
 

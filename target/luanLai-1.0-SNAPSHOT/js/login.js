@@ -12,14 +12,13 @@ function login() {
     }
 
     $.ajax({
-
         url: "/LoginServlet",
         type: "post",
         // data表示发送的数据
         data:"userName="+ name +"&userPassword=" + password,
 
         success: function (data) {
-            if (data !== null && data.success) {
+            if (data != null && data.success) {
                 location.href = "success.html";
             } else {
                 console.log("登录失败：" + data);

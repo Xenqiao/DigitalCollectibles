@@ -27,5 +27,12 @@
         <url-pattern>/RegisterServlet</url-pattern>
     </servlet-mapping>
 
-
+    <servlet>
+        <servlet-name>UploadImgServlet</servlet-name>
+        <servlet-class>viewServlet.UploadImgServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UploadImgServlet</servlet-name>
+        <url-pattern>/UploadImgServlet</url-pattern>
+    </servlet-mapping>
 </web-app>

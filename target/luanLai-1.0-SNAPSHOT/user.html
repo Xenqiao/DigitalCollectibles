@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>User Profile</title>
+        <link rel="stylesheet" type="text/css" href="css/user.css">
+    </head>
+    <body>
+        
+        <div class="avatar">
+            <label class="btn-file" data-role="add">
+                <img id="avatarImg" src="jpg/my.jpg" alt="User Avatar">
+                <input id="avatarFile" accept="image/*" name="avatarFile" type="file" style="display:none;" />
+            </label>
+        </div>
+        
+        <div class="search-box">
+            <form>
+                <label for="searchInput">搜索分类：</label>
+                <select name="category">
+                    <option value="id">藏品唯一标识</option>
+                    <option value="name">藏品名</option>
+                    <option value="maker">铸造者</option>
+                </select>
+                <input type="text" id="searchInput" name="searchInput">
+                <button type="submit">搜索</button>
+            </form>
+        </div>
+        
+        <div class="name">
+            用户名称: <span id="name">John Doe</span><br>
+            账号：<span id="userName">a</span><br>
+            用户哈希：<span id="hash"></span><br>
+            余额：<span id="balance"></span>
+        </div>
+        
+        
+        <div class="button-container">
+            <button class="button" onclick="location.href='change.html'">修改个人信息</button>
+            <button class="button">余额充值</button>
+            <button class="button">铸造新的藏品</button>
+            <button class="button">我铸造的藏品</button>
+            <button class="button">转增藏品</button>
+            <button class="button">藏品追溯</button>
+            <button class="button" onclick="location.href='CollectionsDisplay.html'">购买藏品</button>
+            <button class="button">已购买的藏品</button>
+            <button class="button" onclick="location.href='login.html'">退出登录</button>
+            
+        </div>
+        
+        
+        <div class="container">
+            <div class="item">
+                <img src="jpg/my.jpg" alt="Item 1">
+                <div class="info">
+                    <h2>青铜鹿</h2>
+                    <p>东周时期的青铜器，高度 19 厘米。</p>
+                    <div class="price">¥ 120,000</div>
+                </div>
+            </div>
+            <div class="item">
+                <img src="jpg/my.jpg" alt="Item 2">
+                <div class="info">
+                    <h2>铜鼓</h2>
+                    <p>春秋战国时期的青铜器，直径 35 厘米。</p>
+                    <div class="price">¥ 95,000</div>
+                </div>
+            </div>
+            <div class="item">
+                <img src="jpg/my.jpg" alt="Item 3">
+                <div class="info">
+                    <h2>黄铜鱼</h2>
+                    <p>明代时期的铜器，长度 14 厘米。</p>
+                    <div class="price">¥ 45,000</div>
+                </div>
+            </div>
+            <div class="item">
+                <img src="jpg/my.jpg" alt="Item 4">
+                <div class="info">
+                    <h2>金龙饰件</h2>
+                    <p>汉代时期的金器，长度9 厘米。</p>
+                    <div class="price">¥ 250,000</div>
+                </div>
+            </div>
+            <div class="item">
+                <img src="jpg/my.jpg" alt="Item 5">
+                <div class="info">
+                    <h2>银簋</h2>
+                    <p>清代时期的银器，直径 25 厘米。</p>
+                    <div class="price">¥ 80,000</div>
+                </div>
+            </div>
+            
+            
+            <div class="item">
+                <img src="jpg/my.jpg" alt="Item 6">
+                <div class="info">
+                    <h2>玉琮</h2>
+                    <p>商代时期的玉器，长度 12 厘米。</p>
+                    <div class="price">¥ 180,000</div>
+                </div>
+            </div>
+            
+            <div class="item">
+                <img src="jpg/my.jpg" alt="Item 6">
+                <div class="info">
+                    <h2>玉琮</h2>
+                    <p>商代时期的玉器，长度 12 厘米。</p>
+                    <div class="price">¥ 180,000</div>
+                </div>
+            </div>
+            
+            <div class="item">
+                <img src="jpg/my.jpg" alt="Item 6">
+                <div class="info">
+                    <h2>玉琮</h2>
+                    <p>商代时期的玉器，长度 12 厘米。</p>
+                    <div class="price">¥ 180,000</div>
+                </div>
+            </div>
+            
+            <div class="item">
+                <img src="jpg/my.jpg" alt="Item 6">
+                <div class="info">
+                    <h2>玉琮</h2>
+                    <p>商代时期的玉器，长度 12 厘米。</p>
+                    <div class="price">¥ 180,000</div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <script>
+            $.ajax({
+                url: "/UploadImgServlet",
+                type: "get",
+                data: { // 将多个参数打包成一个 JSON 对象
+                    name: "张三",
+                    userName: "zhangsan",
+                    hash: "0x12345678",
+                    balance: 100.00,
+                    pictureSource : "",
+                },
+                dataType: 'json',
+                success: function (data) {
+                    $('#name').text(data.name);
+                    $('#userName').text(data.userName);
+                    $('#hash').text(data.hash);
+                    $('#avatarImg').attr('src', data.pictureSource);
+                    $('#balance').text(data.balance);
+                    
+                },
+                error: function (xhr, status, error) {
+                    console.log("请求发生错误：" + error);
+                }
+            });
+        </script>
+        <script type="text/javascript" src="js/userHeadSculpture.js"></script>
+        
+    </body>
+</html>

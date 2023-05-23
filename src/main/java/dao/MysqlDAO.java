@@ -91,6 +91,7 @@ public class MysqlDAO {
 
             setParameters(ps, params);
             rowsAffected = ps.executeUpdate();
+
             DBUtil.closeAll(conn,ps,null);
         } catch (SQLException e) {
             System.err.println("Failed to execute insert: " + e.getMessage());

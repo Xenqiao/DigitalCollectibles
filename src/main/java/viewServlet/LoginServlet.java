@@ -13,7 +13,6 @@ import util.MyTools;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Serial;
 
 
 /**
@@ -24,7 +23,6 @@ import java.io.Serial;
 public class LoginServlet extends HttpServlet {
     UserDTO userDTO = UserDTO.getUserDTO();
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     @Override
