@@ -1,10 +1,12 @@
 package controller;
 
 import dao.DBUtil;
+import dto.MyLoggerDTO;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.util.logging.Level;
 
 /**
  * @author Xenqiao
@@ -58,6 +60,10 @@ public class TransactionHandler implements InvocationHandler {
             }
 
         } catch (Exception e) {
+            MyLoggerDTO.getMyLoggerDTO().log(
+                    Level.WARNING,
+                    "（事务即将回滚）Transaction rollback"
+            );
             // 回滚事务
             if (connection != null) {
                 connection.rollback();

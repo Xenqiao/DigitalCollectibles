@@ -74,7 +74,7 @@ public class LoginServlet extends HttpServlet {
             userDTO.setUserName(userDTO1.getUserName());
             userDTO.setPwd(userDTO1.getPwd());
             userDTO.setHash(userDTO1.getHash());
-
+            userDTO.setName(userDTO1.getName());
             out.print("{\"success\": true}");
         }
         out.flush(); // 刷新输出流

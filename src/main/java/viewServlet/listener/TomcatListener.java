@@ -23,7 +23,12 @@ public class TomcatListener implements ServletContextListener {
         //过滤器清除浏览器缓存
         FilterRegistration.Dynamic filter = sre.getServletContext().addFilter("ClearCacheFilter", ClearCacheFilter.class);
         // *.js 换成 /* 就是更新所有文件
-        filter.addMappingForUrlPatterns(null, true, "*.js","*.html");
+        filter.addMappingForUrlPatterns(
+                null,
+                true,
+                "*.js","*.html","*.css","*.jpg","*.png","*.gif","*.ico"
+        );
+
     }
 
     @Override

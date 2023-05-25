@@ -17,6 +17,11 @@
         <url-pattern>/LoginServlet</url-pattern>
     </servlet-mapping>
 
+<!--    临时文件的地址-->
+    <context-param>
+        <param-name>jakarta.servlet.annotation.MultipartConfig.location</param-name>
+        <param-value>/solidity</param-value>
+    </context-param>
 
     <servlet>
         <servlet-name>RegisterServlet</servlet-name>
@@ -33,6 +38,6 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>UploadImgServlet</servlet-name>
-        <url-pattern>/UploadImgServlet</url-pattern>
+        <url-pattern>/UServlet</url-pattern>
     </servlet-mapping>
 </web-app>

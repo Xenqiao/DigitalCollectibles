@@ -1,6 +1,9 @@
 package dao;
 
+import dto.MyLoggerDTO;
+
 import java.sql.*;
+import java.util.logging.Level;
 
 /**
  * @author Xenqiao
@@ -13,12 +16,17 @@ public class DBUtil {
      * @return
      */
     public static Connection getConn() {
+
         try {
             return MyConnectionPool.getConnection();
         } catch (SQLException e) {
-            e.printStackTrace();
+            MyLoggerDTO.getMyLoggerDTO().log(
+                    Level.WARNING,
+                    "（获取连接池的接口失败）Failed to get connection: " + e.getMessage()
+            );
+            throw new RuntimeException(e);
         }
-        return null;
+
     }
 
 
@@ -38,6 +46,10 @@ public class DBUtil {
                 MyConnectionPool.releaseConnection(connection);
             }
         } catch (SQLException e) {
+            MyLoggerDTO.getMyLoggerDTO().log(
+                    Level.WARNING,
+                    "（关闭连接口 rs 或者 ps 失败）Failed to close connection: " + e.getMessage()
+            );
             e.printStackTrace();
         }
 

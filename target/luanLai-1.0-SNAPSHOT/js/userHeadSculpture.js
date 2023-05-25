@@ -1,84 +1,45 @@
 
 
-$(function(){
+var imageInput = document.getElementById('image-input');
+var imagePreview = document.getElementById('image-preview');
 
-    // 监听文件改变
-    var inputFile = document.getElementById('avatarFile')
-    inputFile.addEventListener('click', function() {this.value = null;}, false);
-    inputFile.addEventListener('change', readData, false);
-})
+// 点击图片时触发事件，显示文件选择对话框
+imagePreview.addEventListener('click', function(event) {
+    imageInput.click();
+});
 
+imageInput.addEventListener('change', function(event) {
+    var file = event.target.files[0];
 
-// 文件改变响应
-function readData(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
+    // 判断上传的文件是否为图片文件
+    var fileType = file.type;
+    var isImage = /^image\//.test(fileType);
+    if (!isImage) {
+        alert('请上传图片文件');
+        return;
+    }
 
-    var file = evt.dataTransfer !== undefined ? evt.dataTransfer.files[0] : evt.target.files[0];
-
-    if (!file.type.match(/image.*/)) {return;}
+    // 使用FileReader对象读取文件
     var reader = new FileReader();
-    reader.onload = (function() {
+    reader.onload = function(event) {
+        // 将读取的数据用于更新图片元素
+        imagePreview.src = event.target.result;
 
-        return function(e) {
-            var img = new Image();
-            img.src = e.target.result;
+        // 创建FormData对象，并将图片文件添加到其中
+        var formData = new FormData();
+        formData.append('image', file);
 
-            img.onload = (function() {
-
-                var canvas = document.createElement('canvas');
-                canvas.width = 800;
-                canvas.height = 800;
-
-                var ctx = canvas.getContext("2d");
-
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // canvas清屏
-
-                //重置canvans宽高 canvas.width = img.width; canvas.height = img.height;
-
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // 将图像绘制到canvas上
-
-                //必须等压缩完才读取canvas值，否则canvas内容是黑帆布
-                canvas.toDataURL("image/jpeg");
-
-                cropAndUploadImage(canvas.toDataURL("image/jpeg"), function(dataUrl) {
-                    // 在回调函数中更新图片路径
-                    var imagePath = dataUrl;
-                    var avatarImg = document.getElementById("avatarImg");
-                    avatarImg.src = imagePath; // 设置图片路径
-
-                    setTimeout(function(){
-                        window.location.reload();
-                    },1000);
-                });
-            });
-        }
-    })(file);
-
-    reader.readAsDataURL(file);
-}
-
-
-function cropAndUploadImage(base64,callBack){
-
-    var b64 = base64.split(",")[1];
-    // var load = layerLoad();
-    $.ajax({
-        url: '/UploadImgServlet',
-        type: "post",
-        data:{
-            photo : b64,
-        },
-        dataType: 'json',
-        success:function(data) {
-            if(data.success){
-                callBack(data.message);
-            }else {
-
+        // 创建XMLHttpRequest对象，发送FormData对象到Servlet类
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/UServlet');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                console.log('图片上传成功');
+            } else {
+                console.log('图片上传失败');
             }
-        },
-        error: function (xhr, status, error) {
-            console.log("请求发生错误：" + error);
-        }
-    })
-}
+        };
+        xhr.send(formData);
+    }
+    reader.readAsDataURL(file);
+});

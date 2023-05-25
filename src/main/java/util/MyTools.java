@@ -1,8 +1,9 @@
 package util;
 
-import org.fisco.bcos.sdk.crypto.hash.Keccak256;
+import dto.MyLoggerDTO;
 
 import java.security.MessageDigest;
+import java.util.logging.Level;
 
 /**
  * @author Xenqiao
@@ -30,6 +31,11 @@ public class MyTools {
             }
             return hexString.toString();
         } catch (Exception e) {
+
+            MyLoggerDTO.getMyLoggerDTO().log(
+                    Level.CONFIG,
+                    "（MD5算法加密失败）MD5 encryption failed"
+            );
             e.printStackTrace();
         }
         return null;

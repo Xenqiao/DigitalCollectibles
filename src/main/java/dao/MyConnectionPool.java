@@ -6,7 +6,10 @@ import java.sql.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import javax.sql.DataSource;
+
+import dto.MyLoggerDTO;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 /**
@@ -51,7 +54,12 @@ public class MyConnectionPool {
                 Connection connection = dataSource.getConnection();
                 idleConnections.offer(connection);
             } catch (SQLException e) {
-                System.err.println("Failed to initialize connection: " + e.getMessage());
+
+                MyLoggerDTO.getMyLoggerDTO().log(
+                        Level.WARNING,
+                        "（初始化数据库连接池失败）Failed to initialize connection: " + e.getMessage()
+                );
+
             }
         }
     }
@@ -72,12 +80,20 @@ public class MyConnectionPool {
                 //最大等待时间为 5秒
                 connection = idleConnections.poll(5000, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
+                MyLoggerDTO.getMyLoggerDTO().log(
+                        Level.WARNING,
+                        "（连接池接口等待连接超时）Timed out waiting for a free database connection."
+                );
                 Thread.currentThread().interrupt();
             }
         }
         if (connection != null) {
             return connection;
         }
+        MyLoggerDTO.getMyLoggerDTO().log(
+                Level.WARNING,
+                "（连接池已耗尽）Connection pool exhausted."
+        );
         throw new SQLException("连接池已耗尽!!!");
     }
 
@@ -117,7 +133,12 @@ public class MyConnectionPool {
                         Connection connection = dataSource.getConnection();
                         idleConnections.offer(connection);
                     } catch (SQLException e) {
-                        System.err.println("Failed to add connection to pool: " + e.getMessage());
+
+                        MyLoggerDTO.getMyLoggerDTO().log(
+                                Level.WARNING,
+                                "（添加连接到连接池失败）Failed to add connection to pool: " + e.getMessage()
+                        );
+                        //System.err.println("Failed to add connection to pool: " + e.getMessage());
                     }
                 }
             } else if (size < currentSize) {
@@ -128,7 +149,11 @@ public class MyConnectionPool {
                         try {
                             connection.close();
                         } catch (SQLException e) {
-                            System.err.println("Failed to close connection: " + e.getMessage());
+                            MyLoggerDTO.getMyLoggerDTO().log(
+                                    Level.WARNING,
+                                    "（关闭连接失败）Failed to close connection: " + e.getMessage()
+                            );
+                            //System.err.println("Failed to close connection: " + e.getMessage());
                         }
                     }
                 }

@@ -1,5 +1,7 @@
 package dao;
 
+import dto.MyLoggerDTO;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
@@ -7,6 +9,9 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+
+
 
 /**
  * @author Xenqiao
@@ -30,11 +35,17 @@ public class SqlMapper<T> {
         List<T> list = new ArrayList<>();
         ResultSetMetaData metaData = rs.getMetaData();
         int numColumns = metaData.getColumnCount();
+
         while (rs.next()) {
             T obj;
             try {
                 obj = clazz.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
+
+                MyLoggerDTO.getMyLoggerDTO().log(
+                        Level.WARNING,
+                        "（未能创建类的对象）Failed to create object of class " + clazz.getName()
+                );
                 throw new SQLException("Failed to create object of class " + clazz.getName(), e);
             }
             for (int i = 1; i <= numColumns; i++) {
@@ -46,6 +57,7 @@ public class SqlMapper<T> {
         }
         return list;
     }
+
 
     /** 设置Java对象属性值
      *
@@ -60,6 +72,12 @@ public class SqlMapper<T> {
             Method method = clazz.getMethod(methodName, value.getClass());
             method.invoke(obj, value);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+
+            MyLoggerDTO.getMyLoggerDTO().log(
+                    Level.WARNING,
+                    "（未能设置属性）Failed to set property " + columnName + " for object of class " + clazz.getName()
+            );
+
             throw new SQLException("Failed to set property " + columnName + " for object of class " + clazz.getName(), e);
         }
     }

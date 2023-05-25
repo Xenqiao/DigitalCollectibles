@@ -8,7 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import util.contractRealize.FiscoInitializer;
+import util.MyTools;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -74,7 +74,7 @@ public class RegisterServlet extends HttpServlet {
         } else {
 
             userDTO.setUserName(userName);
-            userDTO.setPwd(password);
+            userDTO.setPwd(MyTools.encrypt(password));
             boolean registered = userDAO.registerUser();
             System.out.println("哈希值来咯："+userDTO.getHash());
 
@@ -95,7 +95,7 @@ public class RegisterServlet extends HttpServlet {
 
     public static void main(String[] args) {
         //boolean a = "".equals((String)null);
-        System.out.println((String) null);
+        System.out.println(MyTools.encrypt("11"));
         System.out.println("");
     }
 }

@@ -1,6 +1,5 @@
 package dao.impl;
 
-import dao.DBUtil;
 import dao.MysqlDAO;
 import dao.MySqlBuilder;
 import dao.UserDAO;
@@ -8,20 +7,15 @@ import dto.UserDTO;
 import service.CreateUserService;
 import service.impl.CreateUserServiceImpl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Xenqiao
  * @create 2023/5/14 19:07
  */
 public class UserDAOImpl implements UserDAO {
-    private Connection conn;
-    private PreparedStatement ps;
     private String sql;
-    private ResultSet rs;
 
     UserDTO userDTO = UserDTO.getUserDTO();
 
@@ -30,53 +24,58 @@ public class UserDAOImpl implements UserDAO {
      * 登录时找到对应用户的数据
      **/
     public UserDTO findUserDTO(String userName) {
-        conn = DBUtil.getConn();
-        if (conn == null) {
+
+        UserDTO userDTO1 = new UserDTO();
+
+        //sql = " select * from user where userName = ? ";
+        MySqlBuilder mySqlBuilder = new MySqlBuilder();
+        sql = mySqlBuilder.select(null, "user", "userName");
+
+        MysqlDAO mysqlDAO = new MysqlDAO();
+        List<Map<String, Object>> list = mysqlDAO.select(sql, userName);
+        if (list.size() == 0) {
             return null;
         }
-        UserDTO userDTO = new UserDTO();
-        try {
-            MySqlBuilder mySqlBuilder = new MySqlBuilder();
-            String[] strings = {"*"};
-            sql = mySqlBuilder.select(strings,"user","userName");
 
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, userName);
-            rs = ps.executeQuery();
-            while (rs.next()) {
+        userDTO1.setUserName((String) list.get(0).get("userName"));
+        userDTO1.setPwd((String) list.get(0).get("password"));
+        userDTO1.setHash((String) list.get(0).get("hash"));
+        userDTO1.setName((String) list.get(0).get("name"));
+        String balance = list.get(0).get("balance").toString();
+        userDTO1.setBalance(Integer.valueOf(balance));
 
-                userDTO.setUserName(rs.getString("userName"));
-                userDTO.setPwd(rs.getString("password"));
-                userDTO.setHash(rs.getString("hash"));
-            }
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        DBUtil.closeAll(conn, ps, rs);
-        return userDTO;
+        System.out.println(userDTO1.getUserName());
+        System.out.println(userDTO1.getPwd());
+        System.out.println(userDTO1.getHash());
+        System.out.println(userDTO1.getName());
+        System.out.println(userDTO1.getBalance());
+        return userDTO1;
     }
 
-    /** 创建新的用户 **/
+    /**
+     * 创建新的用户
+     **/
     @Override
-    public boolean registerUser(){
+    public boolean registerUser() {
 
         CreateUserService createUserService = new CreateUserServiceImpl();
         String hash = createUserService.getUserHash();
         userDTO.setHash(hash);
+        userDTO.setName("未命名用户");
 
         //sql = " insert into user(userName,password,hash) values(?,?,?) ";
         MySqlBuilder mySqlBuilder = new MySqlBuilder();
-        String[] strings = {"userName","password","hash"};
-        sql = mySqlBuilder.insert("user",strings);
+        String[] strings = {"userName", "password", "hash","name"};
+        sql = mySqlBuilder.insert("user", strings);
 
         Object[] param = {
                 userDTO.getUserName(),
                 userDTO.getPwd(),
-                userDTO.getHash()
+                userDTO.getHash(),
+                userDTO.getName()
         };
         MysqlDAO mysqlDAO = new MysqlDAO();
-        return mysqlDAO.executeUpdate(sql,param);
+        return mysqlDAO.insert(sql, param);
     }
 
     @Override

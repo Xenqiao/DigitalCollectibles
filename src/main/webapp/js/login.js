@@ -19,7 +19,7 @@ function login() {
 
         success: function (data) {
             if (data != null && data.success) {
-                location.href = "success.html";
+                location.href = "user.html";
             } else {
                 console.log("登录失败：" + data);
                 alert("登录失败，请检查用户名和密码是否正确。");
